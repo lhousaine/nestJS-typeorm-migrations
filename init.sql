@@ -1,0 +1,5 @@
+CREATE DATABASE IF NOT EXISTS myDB;
+
+GRANT ALL PRIVILEGES ON myDB.* TO 'user'@'%';
+
+GRANT ALL ON myDB.* TO 'user'@'%';
