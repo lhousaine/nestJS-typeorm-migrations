@@ -13,10 +13,4 @@ export class User {
 
   @Column()
   age: number;
-
-  @Column()
-  birthplace: string;
-
-  @Column()
-  username: string;
 }
