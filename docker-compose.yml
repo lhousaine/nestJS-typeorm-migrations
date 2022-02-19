@@ -1,20 +1,46 @@
 version: '3.7'
 
 services:
-  mysql:
-    image: mysql
-    container_name: mysqlServer
-    restart: always
+  mysqlDB:
+    image: mysql:5.7
+    container_name: ${MYSQL_HOST}
+    networks:
+      - nesjs-network
     volumes:
       - mysql-server:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: user
-      MYSQL_PASSWORD: user1234
-      MYSQL_DATABASE: users_db
+      MYSQL_TCP_PORT: ${MYSQL_TCP_PORT}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     ports:
-      - '3306:3306'
+      - "${MYSQL_TCP_PORT}:${MYSQL_TCP_PORT}"
+    env_file: .env
+    restart: always
+
+  backendapi:
+    container_name: "backendapi"
+    build:
+      context: .
+      target: production
+      dockerfile: ./dockerfile
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - NODE_ENV:${NODE_ENV}
+    ports:
+      - ${MAIN_APP_PORT}:${MAIN_APP_PORT}
+      - 9229:9229
+    command: npm run start:prod
+    env_file:
+      - .env
+    networks:
+      - nesjs-network
+    depends_on:
+      - mysqlDB
+
+networks:
+  nesjs-network:
 
 volumes:
   mysql-server:
