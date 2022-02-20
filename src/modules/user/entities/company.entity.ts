@@ -7,10 +7,4 @@ export class Company {
 
   @Column()
   name: string;
-
-  @Column()
-  adress: string;
-
-  @Column()
-  city: string;
 }
